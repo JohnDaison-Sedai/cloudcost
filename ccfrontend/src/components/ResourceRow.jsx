@@ -37,6 +37,8 @@ const ResourceRow = ({ resource, resourceTypes, regions, onUpdate, onRemove, can
             value={resource.region}
             onChange={(e) => onUpdate(resource.id, 'region', e.target.value)}
             className="select-field"
+            disabled={!resource.resourceType}
+            title={!resource.resourceType?'Select a valid Resource type first!':''}
           >
             <option value="">Select region</option>
             {regions.map(region => (

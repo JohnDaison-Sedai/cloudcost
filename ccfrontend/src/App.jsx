@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 import Header from './components/Header';
@@ -9,6 +9,7 @@ import CostEstimate from './components/CostEstimate';
 
 import { resourceTypes, regions } from './utils/constants';
 import { calculateMockEstimate } from './utils/costCalculator';
+import { computeHeadingLevel } from '@testing-library/dom';
 
 function App() {
   const [resources, setResources] = useState([
@@ -17,6 +18,23 @@ function App() {
   const [businessRequirements, setBusinessRequirements] = useState('');
   const [estimate, setEstimate] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [resource_type, setResource_type] = useState([])
+
+  const getListOfResourceTypes = async () => {
+
+    try {
+    const response = await fetch('http://localhost:8080/api/resource_type');
+    console.log(response,"response");
+    if (!response.ok) throw new Error('Failed to fetch resources');
+    const data = await response.json();
+    console.log("Fetched resourcetypes:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching resourcetypes:", error);
+    return [];
+  
+  }
+}
 
   const addResource = () => {
     const newId = Math.max(...resources.map(r => r.id)) + 1;
@@ -53,6 +71,7 @@ function App() {
 
       if (response.ok) {
         const data = await response.json();
+        
         setEstimate(data);
       } else {
         setEstimate(calculateMockEstimate(resources));
@@ -65,6 +84,15 @@ function App() {
     }
   };
 
+  useEffect(() => {
+  const fetchResources = async () => {
+    const resource_type = await getListOfResourceTypes();
+    setResource_type(resources);
+  };
+
+  fetchResources();
+}, []);
+
   return (
     <div className="App">
       <BackgroundDecoration />
@@ -72,7 +100,7 @@ function App() {
       <div className="container">
         <Header />
 
-        <div className="main-content">
+          <div className="main-content">
           <ResourceConfiguration
             resources={resources}
             resourceTypes={resourceTypes}
@@ -82,7 +110,7 @@ function App() {
             onRemoveResource={removeResource}
           />
 
-          <BusinessRequirements
+          {/* <BusinessRequirements
             value={businessRequirements}
             onChange={setBusinessRequirements}
           />
@@ -95,8 +123,8 @@ function App() {
             {isLoading ? 'Calculating...' : 'Calculate Estimate'}
           </button>
 
-          <CostEstimate estimate={estimate} />
-        </div>
+          <CostEstimate estimate={estimate} /> */}
+        </div> 
       </div>
     </div>
   );

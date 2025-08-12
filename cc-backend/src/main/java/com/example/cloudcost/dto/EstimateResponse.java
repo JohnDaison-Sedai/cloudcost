@@ -9,10 +9,14 @@ public class EstimateResponse {
 
     public EstimateResponse() {}
 
-    public EstimateResponse(List<ResourceCost> resourceCosts, double totalCost, String currency) {
-        this.resourceCosts = resourceCosts;
+    public EstimateResponse(double totalCost) {
         this.totalCost = totalCost;
-        this.currency = currency;
+//        this.currency = currency;
+    }
+
+    public EstimateResponse(double totalCost, List<ResourceCost> resourceCosts){
+        this.totalCost = totalCost;
+        this.resourceCosts = resourceCosts;
     }
 
     public List<ResourceCost> getResourceCosts() {

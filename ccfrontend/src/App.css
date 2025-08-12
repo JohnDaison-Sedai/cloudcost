@@ -51,7 +51,7 @@ body {
   filter: blur(2px);
   animation: float 6s ease-in-out infinite;
   top: 20%;
-  right: 15%;
+  right: 13%;
   animation-delay: 2s;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
@@ -63,7 +63,7 @@ body {
   filter: blur(2px);
   animation: float 6s ease-in-out infinite;
   bottom: 20%;
-  left: 20%;
+  left: 10%;
   animation-delay: 4s;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
   
@@ -341,7 +341,7 @@ body {
 }
 
 .calculate-btn:hover:not(:disabled) {
-  transform: translateY(-3px);
+  transform: translate3d(0,-8px,10px);
   box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
 }
 
@@ -353,15 +353,75 @@ body {
 
 /* Estimate section */
 .estimate-section {
-  margin-top: 3rem;
+  margin-top: 3.5rem;
+
+}
+
+.estimate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.estimate-header .section-title {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
 }
 
 .estimate-card {
+  /* background: transparent; Remove background so pseudo-elements show */
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+
   border-radius: 16px;
   padding: 2rem;
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.estimate-card::before {
+  content: '';
+  position: absolute;
+  top: -15%;
+  left: -15%;
+  width: 130%;
+  height: 130%;
+  background-image: linear-gradient(180deg, rgb(0, 183, 255), rgb(255, 48, 255));
+  z-index: 1;
+  animation: rotBGimg 3s linear infinite;
+  transition: all 0.2s linear;
+  border-radius: 20px;
+}
+
+@keyframes rotBGimg {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.estimate-card::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  background: #e1e8ed;
+  border-radius: 15px;
+  z-index: 2;
+  opacity: inherit;
+}
+
+/* Place your content above the pseudo-elements */
+.estimate-card > * {
+  position: relative;
+  z-index: 3;
 }
 
 .total-cost {
@@ -371,7 +431,7 @@ body {
   padding: 1.5rem;
   background: linear-gradient(135deg, #4CAF50, #45a049);
   color: white;
-  border-radius: 12px;
+  border-radius: 10px;
   margin-bottom: 2rem;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }

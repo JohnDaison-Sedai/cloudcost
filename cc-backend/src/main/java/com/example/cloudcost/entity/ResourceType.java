@@ -23,4 +23,8 @@ public class ResourceType {
         return name;
     }
 
+    public double getBase_price(){
+        return base_price;
+    }
+
 }

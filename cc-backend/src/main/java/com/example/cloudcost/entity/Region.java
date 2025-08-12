@@ -1,10 +1,10 @@
 package com.example.cloudcost.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -20,5 +20,15 @@ public class Region {
     private Double multiplier;
 
 
+    @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
+    private List<RegionResource> regionResources = new ArrayList<>();
 
+
+    public String getName() {
+        return name;
+    }
+
+    public Double getMultiplier(){
+        return multiplier;
+    }
 }

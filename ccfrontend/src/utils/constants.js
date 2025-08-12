@@ -1,8 +1,8 @@
-export const resourceTypes = [
-  { value: 'compute', label: 'Compute (EC2)' },
-  { value: 'database', label: 'Database (RDS)' },
-  { value: 'storage', label: 'Storage (S3)' }
-];
+// export const resourceTypes = [
+//   { value: 'compute', label: 'Compute (EC2)' },
+//   { value: 'database', label: 'Database (RDS)' },
+//   { value: 'storage', label: 'Storage (S3)' }
+// ];
 
 export const regions = [
   { value: 'us-east-1', label: 'US East (N. Virginia)' },

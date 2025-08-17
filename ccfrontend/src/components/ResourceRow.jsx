@@ -1,46 +1,47 @@
 import React from 'react';
 
 const ResourceRow = ({ resource, resourceTypes, onUpdate, onRemove, canRemove, resourceTypeSelected, setResourceTypeSelected }) => {
-
-  const [regions,setRegion] = React.useState([]);
+  const [allRegions, setAllRegions] = React.useState([]);
+  const [regions, setRegions] = React.useState([]);
   const resourceTypeIdMap = {
-  'Compute': 1,
-  'Storage': 2,
-  'Database': 3,
-  'Networking': 4,
-  'Security and Identity': 5,
-  'AI/ML': 6,
-};
-
+    'Compute': 1,
+    'Storage': 2,
+    'Database': 3,
+    'Networking': 4,
+    'Security and Identity': 5,
+    'AI/ML': 6,
+  };
 
   const handleResourceTypeChange = async (e) => {
     const selectedType = resourceTypeIdMap[e.target.value];
     onUpdate(resource.id, 'resourceType', e.target.value);
-    console.log("Selected resource type:", selectedType);
 
     if (selectedType) {
       setResourceTypeSelected(true);
-    }
-
-    // Fetch regions based on the selected resource type
-    if (selectedType) {
-
       try {
         const response = await fetch(`http://localhost:8080/api/region/${selectedType}`);
         if (!response.ok) throw new Error('Failed to fetch regions');
-
-        const data = await response.json();
-        console.log("Fetched regions for resource type:", selectedType, data);
-        setRegion(data);
+        const data = await response.json(); // [{region, count}, ...]
+        setAllRegions(data);
+        // Filter regions for current count
+        const count = resource.count > 0 ? resource.count : 1;
+        setRegions(data.filter(r => r.count >= count));
       } catch (error) {
-        console.error("Error fetching regions:", error);
-        setRegion([]);
+        setAllRegions([]);
+        setRegions([]);
       }
     } else {
-      setRegion([]);
+      setAllRegions([]);
+      setRegions([]);
     }
-  }
+  };
 
+  const handleCountChange = (e) => {
+    const val = e.target.value;
+    const count = val === '' ? 0 : parseInt(val, 10);
+    onUpdate(resource.id, 'count', count);
+    setRegions(allRegions.filter(r => r.count >= (count > 0 ? count : 1)));
+  };
 
   return (
     <div className="resource-row">
@@ -53,11 +54,6 @@ const ResourceRow = ({ resource, resourceTypes, onUpdate, onRemove, canRemove, r
             className="select-field"
           >
             <option value="">Select resource type</option>
-            {/* {resourceTypes.map(type => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))} */}
             {resourceTypes.map(type => (
               <option key={type} value={type}>
                 {type}
@@ -72,19 +68,11 @@ const ResourceRow = ({ resource, resourceTypes, onUpdate, onRemove, canRemove, r
             type="number"
             min="1"
             value={resource.count === 0 ? '' : resource.count}
-            onChange={(e) => {
-              // Allow empty string for user editing
-              const val = e.target.value;
-              if (val === '') {
-                onUpdate(resource.id, 'count', 0);
-              } else {
-                onUpdate(resource.id, 'count', parseInt(val, 10));
-              }
-            }}
+            onChange={handleCountChange}
             onBlur={(e) => {
-              // On blur, reset to 1 if empty or invalid
               if (!e.target.value || parseInt(e.target.value, 10) < 1) {
                 onUpdate(resource.id, 'count', 1);
+                setRegions(allRegions.filter(r => r.count >= 1));
               }
             }}
             className="input-field"
@@ -97,13 +85,13 @@ const ResourceRow = ({ resource, resourceTypes, onUpdate, onRemove, canRemove, r
             value={resource.region}
             onChange={(e) => onUpdate(resource.id, 'region', e.target.value)}
             className="select-field"
-            disabled={!resource.resourceType}
-            title={!resource.resourceType?'Select a valid Resource type first!':''}
+            disabled={!resource.resourceType || !resource.count}
+            title={!resource.resourceType ? 'Select a valid Resource type first!' : ''}
           >
             <option value="">Select region</option>
             {regions.map(region => (
-              <option key={region} value={region}>
-                {region}
+              <option key={region.region} value={region.region}>
+                {region.region}
               </option>
             ))}
           </select>

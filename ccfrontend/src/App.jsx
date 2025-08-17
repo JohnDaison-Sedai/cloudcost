@@ -23,7 +23,8 @@ function App() {
   const [errorMsg, setErrorMsg] = useState('');
   const [resourceTypeSelected, setResourceTypeSelected] = useState(false);
   const buttonAreaRef = useRef(null); // 1. Create a ref
-
+  const mainContentRef = useRef(null);
+  const estimateAreaRef = useRef(null);
   const getListOfResourceTypes = async () => {
 
     try {
@@ -75,7 +76,7 @@ function App() {
     // 2. Scroll to the button area after adding a new resource (with a slight delay to ensure DOM update)
     setTimeout(() => {
       buttonAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }, 100);
+    }, 10);
   };
 
   const removeResource = (id) => {
@@ -135,6 +136,22 @@ function App() {
     } finally {
       setIsLoading(false);
     }
+    setTimeout(() => {
+      estimateAreaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 100);
+  };
+
+  const cleanSlate = () => {
+    setResources([{ id: 1, resourceType: '', count: 1, region: '' }]);
+    setBusinessRequirements('');
+    setEstimate(null);
+    setIsLoading(false);
+    setErrorMsg('');
+    setResourceTypeSelected(false);
+    // Reset the button area scroll position
+    if (buttonAreaRef.current) {
+      buttonAreaRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   useEffect(() => {
@@ -154,10 +171,13 @@ function App() {
 
   return (
     <div className="App">
-      <BackgroundDecoration />
+      <BackgroundDecoration 
+        cloudCount={resources.length + 2} 
+        mainContentRef={mainContentRef} 
+      />
       <div className="container">
         <Header />
-        <div className="main-content">
+        <div className="main-content" ref={mainContentRef}>
           {errorMsg && (
             <div style={{ color: 'red', marginBottom: '1rem', fontWeight: 'bold' }}>
               {errorMsg}
@@ -188,8 +208,18 @@ function App() {
               {isLoading ? 'Calculating...' : 'Calculate Estimate'}
             </button>
           </div>
-
+          <div ref={estimateAreaRef}>
           <CostEstimate estimate={estimate} /> 
+          
+
+          <button
+  className="reconfigure"
+  onClick={cleanSlate}
+  title="Let's begin with a clean slate! (Deletes all rows and restarts)"
+>
+  Reconfigure
+</button>
+          </div>
         </div> 
       </div>
     </div>

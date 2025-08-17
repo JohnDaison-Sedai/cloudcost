@@ -1,6 +1,7 @@
 package com.example.cloudcost.controller;
 
 
+import com.example.cloudcost.dto.RegionCountResponse;
 import com.example.cloudcost.service.RegionService;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class RegionController {
     }
 
     @GetMapping("/{resourceTypeId}")
-    public List<String> getRegionsByResource(@PathVariable Long resourceTypeId){
+    public List<RegionCountResponse> getRegionsByResource(@PathVariable Long resourceTypeId){
         return regionService.getRegionsByResourceType(resourceTypeId);
     }
 

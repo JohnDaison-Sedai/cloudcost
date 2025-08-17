@@ -1,5 +1,6 @@
 package com.example.cloudcost.service;
 
+import com.example.cloudcost.dto.RegionCountResponse;
 import com.example.cloudcost.repository.RegionRepository;
 import org.springframework.stereotype.Service;
 import com.example.cloudcost.entity.Region;
@@ -20,7 +21,7 @@ public class RegionService {
         return regionRepository.findAll().stream().map(Region::getName).collect(Collectors.toList());
     }
 
-    public List<String> getRegionsByResourceType(Long ResourceTypeId) {
-        return regionRepository.findRegionsByResourceType(ResourceTypeId).stream().map(Region::getName).collect(Collectors.toList());
+    public List<RegionCountResponse> getRegionsByResourceType(Long ResourceTypeId) {
+        return regionRepository.findRegionsByResourceType(ResourceTypeId);
     }
 }

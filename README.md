@@ -1,18 +1,17 @@
 # CloudCost - Cloud Resource Cost Estimator
 
-A comprehensive cloud resource cost estimation application that helps users calculate the cost of deploying various cloud resources across different AWS regions. This application consists of a Spring Boot backend API and a React frontend interface.
+A versatile cloud-cost estimation application that lets the user arrive at an estimated cost and breakdown for the resources that they need based on the type, region and count. This application consists of Spring Boot backend APIs, PostgreSQL Db and a React frontend interface.
 
-## 🚀 Features
+## Features
 
 - **Multi-Resource Cost Estimation**: Calculate costs for various cloud resource types including Compute, Storage, Database, Networking, Security & Identity, and AI/ML services
 - **Regional Pricing**: Support for 20+ AWS regions with region-specific pricing multipliers
-- **Dynamic Resource Configuration**: Add/remove resource configurations dynamically
-- **Business Requirements Integration**: Include business requirements in cost calculations
+- **Easily editable resource lists**: Add/remove resource configurations dynamically
 - **Real-time Cost Calculation**: Get instant cost estimates as you configure resources
-- **Modern UI**: Clean, responsive React interface with cloud-themed design
-- **RESTful API**: Well-structured backend API for resource and cost management
 
-## 🏗️ Architecture
+- **Reconfigure**: Reconfigure button to start afresh with a clean slate
+
+## Architecture
 
 ```
 cloudcost/
@@ -21,11 +20,10 @@ cloudcost/
 │   └── src/main/resources/ # Configuration and data files
 └── ccfrontend/          # React Frontend Application (Port 3000/3001)
     ├── src/components/  # React components
-    ├── src/utils/       # Utility functions and constants
     └── public/          # Static assets
 ```
 
-## 📋 Prerequisites
+## Prerequisites
 
 ### Backend Requirements
 - **Java 21** or higher
@@ -39,9 +37,10 @@ cloudcost/
 
 ### Database Setup
 The application requires a PostgreSQL database with the following configuration:
+
+**Username and Password can be provided by the user during creation**
+
 - Database name: `resource_estimator`
-- Username: `jd`
-- Password: `AngelRose@2`
 - Host: `localhost`
 - Port: `5432`
 
@@ -57,8 +56,8 @@ cd cloudcost
 Create the PostgreSQL database:
 ```sql
 CREATE DATABASE resource_estimator;
-CREATE USER jd WITH PASSWORD 'AngelRose@2';
-GRANT ALL PRIVILEGES ON DATABASE resource_estimator TO jd;
+CREATE USER {add_username} WITH PASSWORD '{add password}';
+GRANT ALL PRIVILEGES ON DATABASE resource_estimator TO add_username;
 ```
 
 ### 3. Start the Backend (Port 8080)
@@ -108,7 +107,7 @@ Start the development server:
 npm start
 ```
 
-The frontend will start on **http://localhost:3000** (or 3001 if 3000 is occupied)
+The frontend will start on **http://localhost:3001**
 
 #### Custom Port Configuration
 To run on a specific port (e.g., 3001):
@@ -127,7 +126,8 @@ set PORT=3001 && npm start
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/resource_type` | Get all available resource types |
-| GET | `/api/region` | Get all available regions with pricing multipliers |
+| GET | `/api/region` | Get all available regions|
+| GET | `/api/region/selected_resource` | Get all available regions with pricing multipliers based on selected resource_type |
 | POST | `/api/estimate` | Calculate cost estimate for given resources |
 
 ### Sample API Requests
@@ -170,6 +170,7 @@ cc-backend/
 │   ├── controller/                        # REST controllers
 │   │   ├── CostEstimatorController.java   # Cost estimation endpoints
 │   │   └── ResourceController.java        # Resource management endpoints
+│   │   └── RegionController.java          # Region management endpoints
 │   ├── dto/                              # Data Transfer Objects
 │   │   ├── EstimateRequest.java          # Request models
 │   │   └── EstimateResponse.java         # Response models
@@ -177,6 +178,8 @@ cc-backend/
 │   │   ├── Region.java                   # Region entity
 │   │   ├── ResourceType.java             # Resource type entity
 │   │   └── Pricing.java                  # Pricing entity
+│   │   └── RegionResource.java           # Many-to-Many table for region-resource counts
+│   │   └── RegionResourceId.java         # COmposite key for Region-Resource Table
 │   ├── repository/                       # Data repositories
 │   ├── service/                          # Business logic interfaces
 │   └── serviceImpl/                      # Service implementations
@@ -218,9 +221,7 @@ ccfrontend/
 │   │   ├── ResourceRow.jsx              # Individual resource row
 │   │   ├── BusinessRequirements.jsx     # Requirements input
 │   │   └── CostEstimate.jsx             # Cost display
-│   ├── utils/                           # Utility functions
-│   │   ├── constants.js                 # Application constants
-│   │   └── costCalculator.js            # Cost calculation logic
+│ logic
 │   ├── App.jsx                          # Main application component
 │   ├── App.css                          # Main styles
 │   └── index.js                         # Application entry point
@@ -233,7 +234,7 @@ ccfrontend/
 - **Create React App** - Build tooling
 - **CSS3** - Styling with animations
 
-#### Available Scripts
+<!-- #### Available Scripts
 ```bash
 # Start development server
 npm start
@@ -254,7 +255,7 @@ cd ccfrontend
 npm run build
 ```
 
-The build files will be in the `build/` directory.
+The build files will be in the `build/` directory. -->
 
 ## 🔧 Configuration
 
@@ -268,8 +269,9 @@ spring.application.name=cloudcost
 
 # Database configuration
 spring.datasource.url=jdbc:postgresql://localhost:5432/resource_estimator
-spring.datasource.username=jd
-spring.datasource.password=AngelRose@2
+spring.datasource.username='ur username'
+
+spring.datasource.password='ur password'
 
 # JPA/Hibernate configuration
 spring.jpa.hibernate.ddl-auto=create-drop
@@ -305,35 +307,18 @@ The application uses the following main entities:
 - Regions include us-east-1, us-west-2, eu-west-1, ap-south-1, etc.
 - Each region has a cost multiplier (0.95 to 1.25)
 
-### Resource Types
-- **Compute** (Base price: $100)
-- **Storage** (Base price: $50)  
-- **Database** (Base price: $70)
-- **Networking** (Base price: $40)
-- **Security and Identity** (Base price: $80)
-- **AI/ML** (Base price: $120)
+
 
 ### Resource Mapping
 - Junction table mapping available resources per region
 - Varying availability of resources across regions
 
-## 🧪 Testing
 
-### Backend Testing
-```bash
-cd cc-backend
-./mvnw test
-```
-
-### Frontend Testing
-```bash
-cd ccfrontend
-npm test
 ```
 
 ### Integration Testing
 1. Start the backend on port 8080
-2. Start the frontend on port 3000/3001
+2. Start the frontend on port 3001
 3. Navigate to the frontend URL
 4. Test the complete flow:
    - Add resource configurations
@@ -341,7 +326,7 @@ npm test
    - Enter business requirements
    - Calculate cost estimates
 
-## 🚀 Deployment
+<!-- ## 🚀 Deployment
 
 ### Backend Deployment
 ```bash
@@ -354,11 +339,10 @@ java -jar target/cloudcost-0.0.1-SNAPSHOT.jar
 ```bash
 cd ccfrontend
 npm run build
-# Deploy the build/ directory to your web server
+# Deploy the build/ directory to your web server -->
 ```
 
-### Docker Deployment (Optional)
-Create Dockerfiles for both applications and use docker-compose for orchestration.
+
 
 ## 🛠️ Troubleshooting
 
@@ -384,39 +368,11 @@ Create Dockerfiles for both applications and use docker-compose for orchestratio
 - **Frontend logs**: Browser console for runtime errors
 - **Database logs**: PostgreSQL log directory
 
-## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👥 Authors
 
-- **Development Team** - Initial work
 
-## 📞 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the troubleshooting section
-- Review the API documentation
-
-## 🗺️ Roadmap
-
-- [ ] Add more cloud providers (Azure, GCP)
-- [ ] Implement user authentication
-- [ ] Add cost history and tracking
-- [ ] Export estimates to PDF/Excel
-- [ ] Real-time pricing updates
-- [ ] Advanced cost optimization suggestions
-- [ ] Multi-currency support
-
----
-
-**Happy Cloud Cost Estimating! ☁️💰**

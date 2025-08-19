@@ -2,7 +2,7 @@
 
 ## Demo Video
 
-You can watch the demo [here](demo/demo.mp4).
+You can watch the demo [here](demo/Assignment_Demo.webm).
 
 
 A versatile cloud-cost estimation application that lets the user arrive at an estimated cost and breakdown for the resources that they need based on the type, region and count. This application consists of Spring Boot backend APIs, PostgreSQL Db and a React frontend interface.

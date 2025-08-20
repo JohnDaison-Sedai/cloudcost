@@ -30,6 +30,14 @@ cloudcost/
 
 ## Prerequisites
 
+## 🐳 Run with Docker Compose
+
+   If you have Docker Compose and all related plugins installed, you can run the application using:
+
+  ```bash
+  bash docker compose up --build
+  ```
+
 ### Backend Requirements
 - **Java 21** or higher
 - **Maven 3.6+**
@@ -378,6 +386,10 @@ npm run build
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 👤 Author
+
+   John Daison
 
 
 
